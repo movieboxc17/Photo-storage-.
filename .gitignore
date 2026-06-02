@@ -1,6 +1,7 @@
 node_modules/
 .env
 photo-storage.db
+photo-storage.db-*
 npm-debug.log*
 .DS_Store
 *.zip
