@@ -1,0 +1,12 @@
+node_modules/
+.env
+photo-storage.db
+photo-storage.db-*
+npm-debug.log*
+.DS_Store
+*.zip
+uploads/original/*
+uploads/thumbs/*
+!uploads/original/.gitkeep
+!uploads/thumbs/.gitkeep
+!uploads/.gitkeep

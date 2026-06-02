@@ -1,0 +1,47 @@
+<%- include('../partials/head', { title: 'Upload', siteTitle, stylesheet: 'admin.css' }) %>
+<div class="layout">
+  <aside class="sidebar">
+    <h2><%= siteTitle %></h2>
+    <nav>
+      <a href="/admin">Dashboard</a>
+      <a href="/admin/albums">Albums</a>
+      <a class="active" href="/admin/upload">Upload</a>
+      <a href="/admin/settings">Settings</a>
+    </nav>
+    <form method="post" action="/admin/logout"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button class="btn secondary" type="submit">Logout</button></form>
+  </aside>
+  <main class="content">
+    <% if (flash) { %><div class="toast <%= flash.type %>"><%= flash.message %></div><% } %>
+    <section class="card">
+      <h1>Upload Photos</h1>
+      <form method="post" action="/admin/upload?_csrf=<%= csrfToken %>" enctype="multipart/form-data" class="stack" id="upload-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <label>Album
+          <select name="album_id" required>
+            <option value="">Select album</option>
+            <% albums.forEach((album) => { %><option value="<%= album.id %>"><%= album.name %></option><% }) %>
+          </select>
+        </label>
+        <label class="dropzone" for="photos">Drag & drop photos or click to select files</label>
+        <input id="photos" type="file" name="photos" multiple accept="image/jpeg,image/png,image/webp,image/gif" required />
+        <div id="preview" class="preview-grid"></div>
+        <button class="btn primary" type="submit">Upload</button>
+      </form>
+    </section>
+
+    <% if (uploaded.length) { %>
+    <section class="card">
+      <h2>Uploaded Files</h2>
+      <div class="photo-grid">
+        <% uploaded.forEach((file) => { %>
+          <article class="photo-card">
+            <img src="/uploads/thumbs/<%= file.filename %>" alt="<%= file.original_name %>" />
+            <p><%= file.original_name %></p>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+    <% } %>
+  </main>
+</div>
+<%- include('../partials/foot', { script: 'admin.js' }) %>
