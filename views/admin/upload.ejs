@@ -8,13 +8,14 @@
       <a class="active" href="/admin/upload">Upload</a>
       <a href="/admin/settings">Settings</a>
     </nav>
-    <form method="post" action="/admin/logout"><button class="btn secondary" type="submit">Logout</button></form>
+    <form method="post" action="/admin/logout"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button class="btn secondary" type="submit">Logout</button></form>
   </aside>
   <main class="content">
     <% if (flash) { %><div class="toast <%= flash.type %>"><%= flash.message %></div><% } %>
     <section class="card">
       <h1>Upload Photos</h1>
-      <form method="post" enctype="multipart/form-data" class="stack" id="upload-form">
+      <form method="post" action="/admin/upload?_csrf=<%= csrfToken %>" enctype="multipart/form-data" class="stack" id="upload-form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <label>Album
           <select name="album_id" required>
             <option value="">Select album</option>
@@ -43,4 +44,4 @@
     <% } %>
   </main>
 </div>
-<%- include('../partials/foot') %>
+<%- include('../partials/foot', { script: 'admin.js' }) %>

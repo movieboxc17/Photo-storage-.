@@ -8,7 +8,7 @@
       <a href="/admin/upload">Upload</a>
       <a href="/admin/settings">Settings</a>
     </nav>
-    <form method="post" action="/admin/logout"><button class="btn secondary" type="submit">Logout</button></form>
+    <form method="post" action="/admin/logout"><input type="hidden" name="_csrf" value="<%= csrfToken %>" /><button class="btn secondary" type="submit">Logout</button></form>
   </aside>
   <main class="content">
     <% if (flash) { %><div class="toast <%= flash.type %>"><%= flash.message %></div><% } %>
@@ -16,6 +16,7 @@
     <section class="card">
       <h1>Edit Album</h1>
       <form method="post" action="/admin/albums/<%= album.id %>/edit" class="stack">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <label>Name <input name="name" value="<%= album.name %>" required /></label>
         <label>Description <textarea name="description" rows="3"><%= album.description || '' %></textarea></label>
         <label>Expires At (optional)
@@ -30,13 +31,16 @@
       <p>Share link: <a target="_blank" href="/share/<%= album.token %>">/share/<%= album.token %></a></p>
       <div class="actions">
         <form method="post" action="/admin/albums/<%= album.id %>/regenerate-token" onsubmit="return confirm('Regenerate token and invalidate old link?')">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <button class="btn danger" type="submit">Regenerate Link Token</button>
         </form>
         <form method="post" action="/admin/albums/<%= album.id %>/toggle-code">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <button class="btn secondary" type="submit"><%= codeEnabled ? 'Disable' : 'Enable' %> Access Code</button>
         </form>
         <% if (codeEnabled) { %>
         <form method="post" action="/admin/albums/<%= album.id %>/regenerate-code">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           <button class="btn secondary" type="submit">Regenerate Code</button>
         </form>
         <p>Current code: <strong><%= album.access_code %></strong></p>
@@ -46,7 +50,9 @@
 
     <section class="card">
       <h2>Photos</h2>
-      <form id="bulk-delete-form" method="post" action="/admin/albums/<%= album.id %>/photos/bulk-delete"></form>
+      <form id="bulk-delete-form" method="post" action="/admin/albums/<%= album.id %>/photos/bulk-delete">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      </form>
       <div class="photo-grid">
         <% if (!photos.length) { %><p>No photos in this album yet.</p><% } %>
         <% photos.forEach((photo) => { %>
@@ -56,9 +62,11 @@
             <div class="actions">
               <a class="btn small secondary" href="/share/<%= album.token %>/download/<%= photo.id %>">Download</a>
               <form method="post" action="/admin/albums/<%= album.id %>/cover/<%= photo.id %>">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                 <button type="submit" class="btn small">Set Cover</button>
               </form>
               <form method="post" action="/admin/photos/<%= photo.id %>/delete" onsubmit="return confirm('Delete photo?')">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                 <button type="submit" class="btn small danger">Delete</button>
               </form>
             </div>
@@ -69,4 +77,4 @@
     </section>
   </main>
 </div>
-<%- include('../partials/foot') %>
+<%- include('../partials/foot', { script: 'admin.js' }) %>

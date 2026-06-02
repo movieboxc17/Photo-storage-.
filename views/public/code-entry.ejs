@@ -5,6 +5,7 @@
     <p>This album is protected. Enter the 5-digit access code.</p>
     <% if (error) { %><div class="toast error"><%= error %></div><% } %>
     <form method="post" action="/share/<%= token %>/code" class="code-form">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       <input name="d1" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
       <input name="d2" maxlength="1" pattern="[0-9]" inputmode="numeric" required />
       <input name="d3" maxlength="1" pattern="[0-9]" inputmode="numeric" required />

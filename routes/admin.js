@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const sharp = require('sharp');
@@ -57,6 +58,10 @@ function bytesToHuman(bytes) {
     idx += 1;
   }
   return `${val.toFixed(idx === 0 ? 0 : 2)} ${units[idx]}`;
+}
+
+function generateAccessCode() {
+  return crypto.randomInt(0, 100000).toString().padStart(5, '0');
 }
 
 router.get(loginPath, (req, res) => {
@@ -217,7 +222,7 @@ router.post('/albums/:id/toggle-code', requireAdmin, (req, res) => {
     db.prepare('UPDATE albums SET access_code = NULL, updated_at = datetime(\'now\') WHERE id = ?').run(album.id);
     setFlash(req, 'success', 'Access code disabled.');
   } else {
-    const code = `${Math.floor(10000 + Math.random() * 90000)}`;
+    const code = generateAccessCode();
     db.prepare('UPDATE albums SET access_code = ?, updated_at = datetime(\'now\') WHERE id = ?').run(code, album.id);
     setFlash(req, 'success', `Access code enabled: ${code}`);
   }
@@ -232,7 +237,7 @@ router.post('/albums/:id/regenerate-code', requireAdmin, (req, res) => {
     return res.redirect(`/admin/albums/${req.params.id}/edit`);
   }
 
-  const code = `${Math.floor(10000 + Math.random() * 90000)}`;
+  const code = generateAccessCode();
   db.prepare('UPDATE albums SET access_code = ?, updated_at = datetime(\'now\') WHERE id = ?').run(code, album.id);
   setFlash(req, 'success', `Access code regenerated: ${code}`);
   return res.redirect(`/admin/albums/${req.params.id}/edit`);

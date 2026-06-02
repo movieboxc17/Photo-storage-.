@@ -83,7 +83,7 @@ Store persistent data (`photo-storage.db`, `uploads/`) on durable disk.
 ## 6) Folder Structure
 
 ```text
-Photo-storage-/
+photo-storage/
 ├── package.json
 ├── .env.example
 ├── .gitignore
