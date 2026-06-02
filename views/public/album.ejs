@@ -1,0 +1,29 @@
+<%- include('../partials/head', { title: album.name, siteTitle, stylesheet: 'public.css' }) %>
+<main class="public-wrap">
+  <header class="album-header">
+    <h1><%= album.name %></h1>
+    <% if (album.description) { %><p><%= album.description %></p><% } %>
+    <p><%= photos.length %> photos · <%= totalSize %></p>
+    <a class="btn primary" href="/share/<%= album.token %>/download-all">Download All</a>
+  </header>
+
+  <section class="gallery" id="gallery">
+    <% photos.forEach((photo, index) => { %>
+      <article class="tile fade-in">
+        <img loading="lazy" src="/uploads/thumbs/<%= photo.filename %>" data-full="/uploads/original/<%= photo.filename %>" data-index="<%= index %>" alt="<%= photo.original_name %>" />
+        <a class="btn small secondary" href="/share/<%= album.token %>/download/<%= photo.id %>">Download</a>
+      </article>
+    <% }) %>
+  </section>
+</main>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button id="close-lightbox" class="icon-btn" aria-label="Close">✕</button>
+  <button id="prev-photo" class="icon-btn" aria-label="Previous">←</button>
+  <img id="lightbox-image" src="" alt="Full photo" />
+  <button id="next-photo" class="icon-btn" aria-label="Next">→</button>
+  <p id="lightbox-counter"></p>
+</div>
+
+<script src="/public/js/lightbox.js"></script>
+<%- include('../partials/foot') %>

@@ -1,0 +1,41 @@
+<%- include('../partials/head', { title: 'Albums', siteTitle, stylesheet: 'admin.css' }) %>
+<div class="layout">
+  <aside class="sidebar">
+    <h2><%= siteTitle %></h2>
+    <nav>
+      <a href="/admin">Dashboard</a>
+      <a class="active" href="/admin/albums">Albums</a>
+      <a href="/admin/upload">Upload</a>
+      <a href="/admin/settings">Settings</a>
+    </nav>
+    <form method="post" action="/admin/logout"><button class="btn secondary" type="submit">Logout</button></form>
+  </aside>
+  <main class="content">
+    <% if (flash) { %><div class="toast <%= flash.type %>"><%= flash.message %></div><% } %>
+    <section class="card">
+      <h1>Create Album</h1>
+      <form method="post" action="/admin/albums" class="stack">
+        <label>Name <input name="name" required /></label>
+        <label>Description <textarea name="description" rows="3"></textarea></label>
+        <button class="btn primary" type="submit">Create Album</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>All Albums</h2>
+      <div class="album-grid">
+        <% if (!albums.length) { %><p>No albums yet.</p><% } %>
+        <% albums.forEach((album) => { %>
+          <article class="album-card">
+            <img src="<%= album.cover_filename ? `/uploads/thumbs/${album.cover_filename}` : '/public/css/placeholder.svg' %>" alt="cover" />
+            <h3><%= album.name %></h3>
+            <p><%= album.description || 'No description' %></p>
+            <p><strong><%= album.photo_count %></strong> photos</p>
+            <a class="btn secondary" href="/admin/albums/<%= album.id %>/edit">Manage</a>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+</div>
+<%- include('../partials/foot') %>

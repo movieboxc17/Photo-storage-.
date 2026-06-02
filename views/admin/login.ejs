@@ -1,0 +1,16 @@
+<%- include('../partials/head', { title: 'Admin Login', siteTitle, stylesheet: 'admin.css' }) %>
+<main class="auth-wrap">
+  <section class="card auth-card">
+    <h1><%= siteTitle %> Admin</h1>
+    <p class="muted">Sign in to manage your private photo library.</p>
+    <% if (flash) { %>
+      <div class="toast <%= flash.type %>"><%= flash.message %></div>
+    <% } %>
+    <form method="post" class="stack">
+      <label>Username <input name="username" required autocomplete="username" /></label>
+      <label>Password <input type="password" name="password" required autocomplete="current-password" /></label>
+      <button class="btn primary" type="submit">Sign in</button>
+    </form>
+  </section>
+</main>
+<%- include('../partials/foot') %>

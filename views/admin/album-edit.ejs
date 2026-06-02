@@ -1,0 +1,72 @@
+<%- include('../partials/head', { title: 'Edit Album', siteTitle, stylesheet: 'admin.css' }) %>
+<div class="layout">
+  <aside class="sidebar">
+    <h2><%= siteTitle %></h2>
+    <nav>
+      <a href="/admin">Dashboard</a>
+      <a class="active" href="/admin/albums">Albums</a>
+      <a href="/admin/upload">Upload</a>
+      <a href="/admin/settings">Settings</a>
+    </nav>
+    <form method="post" action="/admin/logout"><button class="btn secondary" type="submit">Logout</button></form>
+  </aside>
+  <main class="content">
+    <% if (flash) { %><div class="toast <%= flash.type %>"><%= flash.message %></div><% } %>
+
+    <section class="card">
+      <h1>Edit Album</h1>
+      <form method="post" action="/admin/albums/<%= album.id %>/edit" class="stack">
+        <label>Name <input name="name" value="<%= album.name %>" required /></label>
+        <label>Description <textarea name="description" rows="3"><%= album.description || '' %></textarea></label>
+        <label>Expires At (optional)
+          <input type="datetime-local" name="expires_at" value="<%= album.expires_at ? album.expires_at.replace(' ', 'T') : '' %>" />
+        </label>
+        <button class="btn primary" type="submit">Save Changes</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Sharing</h2>
+      <p>Share link: <a target="_blank" href="/share/<%= album.token %>">/share/<%= album.token %></a></p>
+      <div class="actions">
+        <form method="post" action="/admin/albums/<%= album.id %>/regenerate-token" onsubmit="return confirm('Regenerate token and invalidate old link?')">
+          <button class="btn danger" type="submit">Regenerate Link Token</button>
+        </form>
+        <form method="post" action="/admin/albums/<%= album.id %>/toggle-code">
+          <button class="btn secondary" type="submit"><%= codeEnabled ? 'Disable' : 'Enable' %> Access Code</button>
+        </form>
+        <% if (codeEnabled) { %>
+        <form method="post" action="/admin/albums/<%= album.id %>/regenerate-code">
+          <button class="btn secondary" type="submit">Regenerate Code</button>
+        </form>
+        <p>Current code: <strong><%= album.access_code %></strong></p>
+        <% } %>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Photos</h2>
+      <form id="bulk-delete-form" method="post" action="/admin/albums/<%= album.id %>/photos/bulk-delete"></form>
+      <div class="photo-grid">
+        <% if (!photos.length) { %><p>No photos in this album yet.</p><% } %>
+        <% photos.forEach((photo) => { %>
+          <article class="photo-card">
+            <img src="/uploads/thumbs/<%= photo.filename %>" alt="<%= photo.original_name %>" />
+            <label><input form="bulk-delete-form" type="checkbox" name="photo_ids" value="<%= photo.id %>" /> Select</label>
+            <div class="actions">
+              <a class="btn small secondary" href="/share/<%= album.token %>/download/<%= photo.id %>">Download</a>
+              <form method="post" action="/admin/albums/<%= album.id %>/cover/<%= photo.id %>">
+                <button type="submit" class="btn small">Set Cover</button>
+              </form>
+              <form method="post" action="/admin/photos/<%= photo.id %>/delete" onsubmit="return confirm('Delete photo?')">
+                <button type="submit" class="btn small danger">Delete</button>
+              </form>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+      <% if (photos.length) { %><button form="bulk-delete-form" class="btn danger" type="submit">Delete Selected</button><% } %>
+    </section>
+  </main>
+</div>
+<%- include('../partials/foot') %>

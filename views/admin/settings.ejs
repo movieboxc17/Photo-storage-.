@@ -1,0 +1,48 @@
+<%- include('../partials/head', { title: 'Settings', siteTitle, stylesheet: 'admin.css' }) %>
+<div class="layout">
+  <aside class="sidebar">
+    <h2><%= siteTitle %></h2>
+    <nav>
+      <a href="/admin">Dashboard</a>
+      <a href="/admin/albums">Albums</a>
+      <a href="/admin/upload">Upload</a>
+      <a class="active" href="/admin/settings">Settings</a>
+    </nav>
+    <form method="post" action="/admin/logout"><button class="btn secondary" type="submit">Logout</button></form>
+  </aside>
+  <main class="content">
+    <% if (flash) { %><div class="toast <%= flash.type %>"><%= flash.message %></div><% } %>
+
+    <section class="cards">
+      <article class="card"><h3>Albums</h3><p><%= albumCount %></p></article>
+      <article class="card"><h3>Photos</h3><p><%= photoCount %></p></article>
+      <article class="card"><h3>Storage</h3><p><%= storage %></p></article>
+    </section>
+
+    <section class="card">
+      <h2>Branding</h2>
+      <form method="post" action="/admin/settings/site-title" class="stack">
+        <label>Site Title <input name="site_title" value="<%= siteTitle %>" required /></label>
+        <button class="btn primary" type="submit">Update Title</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Admin Username</h2>
+      <form method="post" action="/admin/settings/username" class="stack">
+        <label>Username <input name="username" value="<%= username %>" required /></label>
+        <button class="btn primary" type="submit">Update Username</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Admin Password</h2>
+      <form method="post" action="/admin/settings/password" class="stack">
+        <label>Current Password <input name="current_password" type="password" required /></label>
+        <label>New Password <input name="new_password" type="password" minlength="8" required /></label>
+        <button class="btn danger" type="submit">Update Password</button>
+      </form>
+    </section>
+  </main>
+</div>
+<%- include('../partials/foot') %>
